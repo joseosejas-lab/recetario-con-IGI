@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recetario de Cócteles - Elegancia en cada trago</title>
+    <!-- Incluye el CDN de Tailwind CSS para un diseño moderno y rápido -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f3e9; /* Un tono crema suave para un fondo elegante */
+        }
+        .elegant-title {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        .cocktail-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .cocktail-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 3rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: fadeIn 0.3s;
+        }
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-button:hover {
+            color: #333;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .btn-primary {
+            @apply bg-orange-600 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-orange-700 transition-colors duration-300;
+        }
+    </style>
+</head>
+<body class="bg-[#f7f3e9] text-gray-800">
+
+    <!-- Sección de la Cabecera (Hero) -->
+    <header class="bg-[#333] text-white py-24 text-center rounded-b-3xl shadow-lg">
+        <div class="container mx-auto px-4">
+            <h1 class="elegant-title text-5xl md:text-7xl font-bold mb-4">Elegancia en cada sorbo</h1>
+            <p class="text-xl md:text-2xl font-light max-w-2xl mx-auto mb-8">Descubre el arte de la mixología a través de nuestras exclusivas recetas y técnicas.</p>
+            <button id="loginBtn" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg transition-colors duration-300">Acceso para Profesionales</button>
+            <button id="logoutBtn" class="bg-red-700 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg transition-colors duration-300 hidden mt-4">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="container mx-auto px-4 py-16">
+        
+        <!-- Nivel 1: Clientes (visible por defecto) -->
+        <section id="client-level">
+            <h2 class="elegant-title text-4xl font-bold text-center mb-12">Nuestro Menú</h2>
+            <div id="cocktail-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Las tarjetas de cócteles se generarán aquí con JavaScript -->
+            </div>
+        </section>
+
+        <!-- Nivel 2: Bartenders (oculto por defecto) -->
+        <section id="bartender-level" class="hidden">
+            <h2 class="elegant-title text-4xl font-bold text-center mb-8">Recetario para Bartenders</h2>
+            <p class="text-lg text-gray-700 max-w-2xl mx-auto mb-8 text-center">¡Bienvenido! Aquí encontrarás la ficha técnica de nuestras 133 recetas de cócteles, organizadas por su base alcohólica principal.</p>
+            <div id="bartender-cocktail-list">
+                <!-- Las categorías y tarjetas de cócteles para bartenders se generarán aquí con JavaScript -->
+            </div>
+        </section>
+
+        <!-- Nivel 3: Bar Managers (oculto por defecto) -->
+        <section id="manager-level" class="hidden text-center mt-8">
+            <h2 class="elegant-title text-4xl font-bold mb-8">Gestión de Costos</h2>
+            <p class="text-lg text-gray-700 max-w-2xl mx-auto mb-8">Accede a la hoja de cálculo de gestión para controlar el costeo y el margen de ganancia de cada cóctel. </p>
+            <a href="https://docs.google.com/spreadsheets/d/1dhN37OCJ6CBPOitpensoCuri0gkBt86LJLpH-8vDCjA/edit?gid=1096176080#gid=1096176080" target="_blank" class="btn-primary">Acceder al Costeo</a>
+        </section>
+
+        <!-- Sección de Contacto y Redes Sociales -->
+        <section id="contact-section" class="mb-16 text-center">
+            <h2 class="elegant-title text-4xl font-bold mb-8">Contáctanos y Síguenos</h2>
+            <p class="text-lg text-gray-700 max-w-2xl mx-auto mb-8">¿Tienes alguna pregunta o quieres colaborar? ¡Estamos aquí para ayudarte! También puedes seguirnos en nuestras redes sociales para estar al tanto de las últimas novedades.</p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <a href="mailto:info@tucocteleria.com" class="btn-primary">Enviar un Correo</a>
+                <a href="https://www.instagram.com/tu_cocteleria" target="_blank" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-purple-700 transition-colors duration-300">Instagram</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Pie de Página -->
+    <footer class="bg-gray-800 text-gray-300 py-8 text-center rounded-t-3xl mt-16">
+        <p>&copy; 2025 Recetario de Cócteles. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Modal para mostrar detalles del cóctel -->
+    <div id="cocktail-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="modal-content-details" class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
+                <!-- Contenido dinámico del cóctel se insertará aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para el login -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content text-center">
+            <span class="close-button">&times;</span>
+            <h3 class="elegant-title text-2xl font-bold mb-4">Acceso Profesional</h3>
+            <p class="mb-4">Ingresa tu contraseña para acceder.</p>
+            <input type="password" id="passwordInput" class="w-full p-3 rounded-lg border border-gray-300 mb-4 focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Contraseña">
+            <button id="submitPasswordBtn" class="btn-primary w-full">Entrar</button>
+            <p id="loginError" class="text-red-500 mt-2 hidden">Contraseña incorrecta. Por favor, intenta de nuevo.</p>
+        </div>
+    </div>
+
+    <script>
+        // Datos de los cócteles públicos
+        const publicCocktails = [
+            { id: '1', name: 'Destornillador', description: 'El vodka se une al jugo de naranja para un cóctel sencillo y vibrante que despierta los sentidos.', image: 'https://images.unsplash.com/photo-1596791199676-474c3995f74f?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '2', name: 'Sex on the Beach', description: 'Un exótico trago con vodka y jugos de durazno, arándanos y naranja, evocando una escapada tropical.', image: 'https://images.unsplash.com/photo-1627883921869-d3e961919864?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '3', name: 'After Eight', description: 'Una indulgencia de licor de cacao y menta que se fusiona con la cremosidad para crear un postre líquido inolvidable.', image: 'https://images.unsplash.com/photo-1621360156942-d6159c3547f2?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '4', name: 'Pantera Rosa', description: 'Vodka, crema de coco y jugo de fresa se mezclan en un cóctel cremoso y visualmente divertido con sabor a dulce tentación.', image: 'https://images.unsplash.com/photo-1628287714810-74944d320215?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '5', name: 'Piña Colada', description: 'El ron se combina con piña y coco en una bebida cremosa y tropical que te transporta a playas de arena blanca con cada sorbo.', image: 'https://images.unsplash.com/photo-1601344405786-f6170d14b43b?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '6', name: 'Hurricane', description: 'Ron blanco y oscuro se unen a jugos de fruta de la pasión, naranja y lima. Un cóctel fuerte y afrutado que es una fiesta en sí mismo.', image: 'https://images.unsplash.com/photo-1607592474070-077558667527?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '7', name: 'Tequila Sunrise', description: 'Un amanecer en un vaso. El tequila y el jugo de naranja se tiñen de rojo por la granadina, creando un espectáculo visual.', image: 'https://images.unsplash.com/photo-1616801947849-5777a942416b?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '8', name: 'Blue Margarita', description: 'Una versión vibrante y azul de la Margarita, con tequila y licor de curaçao azul. Sabor cítrico con un toque de magia.', image: 'https://images.unsplash.com/photo-1601925345790-21a719c63b49?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '9', name: 'Margarita de Coco', description: 'La suavidad del coco se une al clásico tequila y lima, transformando la Margarita en una experiencia cremosa y tropical.', image: 'https://images.unsplash.com/photo-1603099908126-e1e48398b111?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '10', name: 'Gin and Tonic', description: 'Un cóctel simple y sofisticado. La ginebra botánica se mezcla con la tónica, ofreciendo un sabor fresco, amargo y limpio.', image: 'https://images.unsplash.com/photo-1574514309832-7c98c1990c74?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '11', name: 'Negroni', description: 'Gin, Campari y vermut dulce se entrelazan en un cóctel equilibrado, amargo y con cuerpo que seduce a los paladares más exigentes.', image: 'https://images.unsplash.com/photo-1597896174676-e9102213d4b6?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '12', name: 'Chuflay', description: 'Un clásico boliviano. Singani y ginger ale se unen para un cóctel refrescante, simple y con un toque de jengibre.', image: 'https://images.unsplash.com/photo-1628287714810-74944d320215?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '13', name: 'Old Fashioned', description: 'El whisky y el amargo de Angostura se entrelazan en este cóctel robusto y clásico, una verdadera lección de historia en un vaso.', image: 'https://images.unsplash.com/photo-1596468112015-8120e9805d23?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '14', name: 'Manhattan', description: 'Un cóctel de whisky, vermut dulce y amargo que encarna la sofisticación de la gran ciudad. Su aroma y sabor son pura elegancia.', image: 'https://images.unsplash.com/photo-1636952706346-61362e49c716?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            { id: '15', name: 'Brave Bull', description: 'El tequila y el licor de café se unen en un cóctel con sabor dulce y audaz que es tan enérgico como su nombre lo sugiere.', image: 'https://images.unsplash.com/photo-1633513192415-3811f200c9f1?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+        ];
+
+        // Datos de los cócteles para bartenders
+        const bartenderCocktails = {
+            'Gin': [
+                { name: 'Gin 8', method: 'Batido', glass: 'Copa flauta (French) 95', ingredients: ['Gin: 1 1/2 oz', 'Jugo de limón: 1 oz', 'Granadina: 1 1/2 oz', 'Sprite: 1 unidad', 'Twist de limón: 1 unidad'] },
+                { name: 'Dry Martini', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Vermouth dry: 2 1/2 oz', 'Vermouth dry: 1 oz', 'Aceituna verde: 2 unidades', 'Limón rodaja: 1 unidad'] },
+                { name: 'Negroni', method: 'Directo', glass: 'Old fashion', ingredients: ['Gin: 1 oz', 'Campari: 1 oz', 'Vermouth rosso: 1 oz', 'Piel de naranja: 1 unidad'] },
+                { name: 'Alexander Sister', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Gin: 1 1/2 oz', 'Licor de menta: 1 1/2 oz', 'Almíbar: 1 oz', 'Clara de huevo: 1 unidad', 'Half and half: 2 oz', 'Chocolate rallado: 1 tallo', 'Leche: 1 oz', 'Crema de leche: 1 oz', 'Azúcar blanca granulada: 20 gr'] },
+                { name: 'Bronx', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Gin: 1 1/2 oz', 'Vermouth: 1 1/2 oz', 'Vermouth rosso: 3/4 oz', 'Jugo de naranja: 1 oz', 'Cerezas: 3 unidades'] },
+                { name: 'Armonía', method: 'Directo', glass: 'Vaso largo', ingredients: ['Gin: 1 1/2 oz', 'Almíbar: 1 1/2 oz', 'Blue Curaçao: 1 oz', 'Mix de manzana fresh: 1/2 oz', 'Cerezas: 3 unidades', 'Manzana gajos: 2 unidades', 'Albahaca: 1 dash', 'Manzana verde: 1 unidad', 'Zumo de limón: 1/2 oz'] },
+                { name: 'Gin & Tonic', method: 'Directo', glass: 'Vaso largo', ingredients: ['Gin: 1 1/2 oz', 'Agua tónica: 4 oz', 'Piel de limón: 1 unidad', 'Hojas de menta: 1 unidad', 'Cerezas: 3 unidades'] },
+                { name: 'Gin & Tonic o Fog Horn', method: 'Directo', glass: 'Vaso largo', ingredients: ['Gin: 1 1/4 oz', 'Zumo de limón: 1/2 oz', 'Ginger Ale: 3 1/2 oz', 'Rodaja de limón: 1 unidad'] },
+                { name: 'Martini', method: 'Refrescado', glass: 'Copa cóctel', ingredients: ['Gin: 2 oz', 'Vermouth dry: 1 oz', 'Aceituna verde: 2 unidades'] },
+                { name: 'Maracuyá Sour', method: 'Batido', glass: 'Copa cóctel o flauta', ingredients: ['Gin: 1 1/2 oz', 'Jugo de maracuyá: 1 1/2 oz', 'Triple sec: 1/2 oz', 'Zumo de limón: 1/2 oz', 'Almíbar: 1 oz', 'Clara de huevo: 1 unidad', 'Bitter Angostura: 1 dash'] },
+                { name: 'Dama Blanca', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Gin: 1 1/2 oz', 'Cointreau: 1 oz', 'Jugo de limón: 1 oz', 'Almíbar: 1 oz', 'Clara de huevo: 1 unidad', 'Limón rallado: 1 cucharilla'] },
+                { name: 'Gin Alexander', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Gin: 1 1/2 oz', 'Licor de chocolate blanco: 1 1/2 oz', 'Half and half: 1 1/2 oz', 'Chocolate rallado: 1 dash'] },
+                { name: 'Moka Martini', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Gin: 1 1/2 palas', 'Licor de chocolate: 1 oz', 'Café americano: 1 taza', 'Almíbar: 1 oz'] }
+            ],
+            'Vodka': [
+                { name: 'Destornillador', method: 'Directo', glass: 'Vaso largo', ingredients: ['Vodka: 1 1/2 oz', 'Jugo de naranja: 4 oz', 'Naranja: 2 gajos'] },
+                { name: 'Electric Lemon', method: 'Directo', glass: 'Vaso largo', ingredients: ['Vodka: 1 1/2 oz', 'Blue Curaçao: 1 oz', 'Zumo de limón: 1 oz', 'Sprite: 1 unidad', 'Limón: 1 gajo'] },
+                { name: 'Sex on the Beach', method: 'Directo', glass: 'Copa pera', ingredients: ['Vodka: 1 1/2 oz', 'Licor de durazno: 1 oz', 'Jugo de naranja: 3 oz', 'Granadina: 1/2 oz'] },
+                { name: 'Melon Ball', method: 'Directo', glass: 'Vaso beverage', ingredients: ['Vodka: 1 1/2 oz', 'Licor de melón: 1 1/2 oz', 'Jugo de naranja: 4 oz', 'Cáscara de melón o melón deshidratado: 1 unidad'] },
+                { name: 'San Mateo', method: 'Directo', glass: 'Pecera o copa de vino', ingredients: ['Vodka: 1 1/2 oz', 'Zumo de limón: 1 oz', 'Gaseosa de pomelo: 3 1/2 oz', 'Almíbar de marrasquino: 1/2 oz', 'Limón: 1 gajo'] },
+                { name: 'Ruso Negro', method: 'Directo', glass: 'Vaso old fashion', ingredients: ['Vodka: 1 1/2 oz', 'Licor de café: 1 oz', 'Esfera de hielo: 1 unidad'] },
+                { name: 'Paranoia', method: 'Directo - Edificado', glass: 'Vaso old fashion', ingredients: ['Vodka: 1 oz', 'Jägermeister: 1 oz', 'Licor de melón: 1 oz', 'Zumo de limón: 1 oz', 'Melón fresco: 1 rodaja'] },
+                { name: 'Cielito Lindo', method: 'Batido', glass: 'Copa pera', ingredients: ['Vodka: 1 1/2 oz', 'Piña colada mix: 3 1/2 oz', 'Hojas de piña fresca: 1 unidad', 'Cerezas: 3 unidades', 'Leche: 1 oz', 'Crema de leche: 1 oz', 'Jugo de piña: 1 oz', 'Esencia de coco: 2 gotas', 'Azúcar blanca granulada: 15 gr'] },
+                { name: 'After Eight', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Vodka: 1 1/2 oz', 'Licor de chocolate blanco: 1 1/2 oz', 'Licor de menta: 1 oz', 'Chocolate rallado: 5 gr', 'Hojas de menta: 1 tallo', 'Leche: 1 oz', 'Crema de leche: 1 oz', 'Azúcar blanca granulada: 20 gr'] },
+                { name: 'Pantera Rosa', method: 'Batido', glass: 'Copa pera', ingredients: ['Vodka: 1 1/2 oz', 'Piña colada mix: 3 1/2 oz', 'Granadina: 1/2 oz', 'Piña fresca o deshidratada: 1 rodaja', 'Cerezas: 3 unidades', 'Hojas de piña fresca: 1 unidad', 'Crema de leche: 1 oz', 'Jugo de piña: 1 oz', 'Esencia de coco: 2 gotas', 'Azúcar blanca granulada: 15 gr'] },
+                { name: 'Orgasmo', method: 'Batido', glass: 'Vaso largo', ingredients: ['Vodka: 2 oz', 'Irish Cream (Baileys): 1 oz', 'Licor de Amaretto: 1 oz', 'Half and Half: 1 oz', 'Cerezas: 2 unidades', 'Leche: 1 1/2 oz', 'Crema de leche: 1 oz', 'Azúcar blanca granulada: 20 gr'] },
+                { name: 'Alien Secretion', method: 'Batido', glass: 'Vaso beverage', ingredients: ['Vodka: 1 1/2 oz', 'Licor de melón: 1/2 oz', 'Licor de Amaretto: 1/2 oz', 'Piña natural o deshidratada: 1 rodaja', 'Cáscara de melón o melón deshidratado: 1 unidad'] },
+                { name: 'Ruso Blanco', method: 'Directo', glass: 'Vaso old fashion', ingredients: ['Vodka: 1 1/2 oz', 'Licor de café: 1 oz', 'Half and Half: 1 oz', 'Leche: 1 oz', 'Crema de leche: 1 oz', 'Azúcar blanca granulada: 20 gr'] },
+                { name: 'Caipiroska', method: 'Batido', glass: 'Old fashioned', ingredients: ['Vodka: 2 oz', 'Limón en gajos: 8', 'Azúcar: 3 a 4 cucharillas'] },
+                { name: 'Long Island Ice Tea', method: 'Directo', glass: 'Vaso beverage', ingredients: ['Vodka: 1/2 oz', 'Ron blanco: 1/2 oz', 'Tequila: 1/2 oz', 'Gin: 1/2 oz', 'Triple sec: 1/2 oz', 'Zumo de limón: 1/2 oz', 'Coca Cola: 4 oz', 'Limón: 1 gajo'] },
+                { name: 'Long Beach Ice Tea', method: 'Directo', glass: 'Vaso beverage', ingredients: ['Vodka: 1/2 oz', 'Ron blanco: 1/2 oz', 'Tequila: 1/2 oz', 'Gin: 1/2 oz', 'Triple sec: 1/2 oz', 'Zumo de limón: 1/2 oz', 'Jugo de cranberries: 4 oz', 'Limón: 1 gajo'] },
+                { name: 'Christmas Champagne', method: 'Batido', glass: 'Copa de vino', ingredients: ['Vodka: 1 1/2 oz', 'Limonada rosa: 2 oz', 'Licor de cassis: 3 oz', 'Champagne: 4 oz', 'Frutos del bosque congelados: 40 gr'] }
+            ],
+            'Tequila': [
+                { name: 'Nieblas del Caribe', method: 'Batido', glass: 'Copa pera', ingredients: ['Tequila blanco: 1 1/2 oz', 'Blue Curaçao: 1/2 oz', 'Jugo de piña: 2 oz', 'Jugo de naranja: 1 oz', 'Rodaja de piña: 1 unidad', 'Naranja en gajo: 1 unidad'] },
+                { name: 'El Charro Negro', method: 'Directo', glass: 'Vaso largo', ingredients: ['Tequila dorado: 1 1/2 oz', 'Coca Cola: 3 1/2 oz', 'Zumo de limón: 1/2 oz', 'Limón rodaja: 1 rodaja'] },
+                { name: 'Margarita Corona', method: 'Directo', glass: 'Shopp', ingredients: ['Tequila dorado: 1 oz', 'Cointreau: 1 oz', 'Zumo de limón: 1 oz', 'Zumo de naranja: 1 oz', 'Almíbar: 1 oz', 'Cerveza Corona: 1 unidad'] },
+                { name: 'Margarita de Coco', method: 'Batido o licuado', glass: 'Copa pera', ingredients: ['Tequila blanco: 1 1/2 oz', 'Triple sec: 1 oz', 'Piña colada mix: 4 oz', 'Piña en rodaja: 8 unidades', 'Menta o hierbabuena: 2 tallos', 'Leche: 1 oz', 'Crema de leche: 1 oz', 'Jugo de piña: 1 oz', 'Esencia de coco: 2 gotas', 'Azúcar blanca granulada: 15 gr'] },
+                { name: 'Paloma', method: 'Directo', glass: 'Vaso largo', ingredients: ['Tequila blanco: 1 1/2 oz', 'Gaseosa de pomelo: 3 1/2 oz', 'Ralladura de limón: 1 cucharilla', 'Zumo de limón: 1 oz', 'Limón real en rodaja: 1 rodaja'] },
+                { name: 'Tequila Sour', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Tequila blanco: 1 1/2 oz', 'Zumo de limón: 1 oz', 'Jarabe de maracuyá: 2 oz', 'Clara de huevo: 3 unidades', 'Bitter: 1 dash', 'Cerezas: 3 unidades', 'Limón en rodaja: 1 rodaja', 'Menta o hierbabuena: 1 tallo'] },
+                { name: 'El Diablo', method: 'Directo', glass: 'Vaso beverage', ingredients: ['Tequila blanco: 1 1/2 oz', 'Licor de cassis: 1 oz', 'Ginger Ale: 4 oz', 'Arándanos: 6 unidades'] },
+                { name: 'Brave Bull o Cucaracha', method: 'Edificado', glass: 'Shot', ingredients: ['Tequila blanco: 1 1/4 oz', 'Licor de café: 1 1/4 oz'] },
+                { name: 'Noche de Acapulco', method: 'Directo', glass: 'Copa pera', ingredients: ['Tequila blanco: 2 oz', 'Ron blanco: 1 oz', 'Jugo de naranja: 3 oz', 'Blue Curaçao: 1 oz', 'Almíbar de marrasquino: 1 oz', 'Piel de naranja: 1 unidad', 'Cerezas: 3 unidades'] },
+                { name: 'Blue Margarita', method: 'Frozen', glass: 'Margarita', ingredients: ['Tequila blanco: 2 oz', 'Blue Curaçao: 1 1/2 oz', 'Zumo de limón: 1 1/2 oz', 'Sal: 4 cucharillas', 'Limón en rodaja: 1 rodaja', 'Cerezas: 3 unidades'] },
+                { name: 'Cóctel del Prado', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Tequila blanco: 3/4 oz', 'Zumo de limón: 1/2 oz', 'Clara de huevo: 1 unidad', 'Granadina: 1 dash', 'Bitter: 1 dash', 'Ralladura de limón: 3 pizcas'] },
+                { name: 'Cactus Colada', method: 'Licuado', glass: 'Copa pera', ingredients: ['Tequila: 1 oz', 'Licor de melón: 2 oz', 'Jugo de piña: 2 oz', 'Helado de coco: 2 bolas', 'Coco rallado: 2 cucharillas', 'Chocolate líquido: c/n', 'Galleta para helado: 1 unidad', 'Chocolate rallado: c/n'] },
+                { name: 'Michelada Picante', method: 'Directo', glass: 'Old fashioned', ingredients: ['Rocoto: 2 unidades', 'Cilantro: 3 ramas', 'Tequila: 1 oz', 'Triple sec: 1 oz', 'Zumo de limón: 1/2 oz', 'Cerveza: 8 oz'] },
+                { name: 'Submarino', method: 'Directo', glass: 'Copa de vino y shot', ingredients: ['Tequila blanco: 1 1/2 oz', 'Licor de cassis: 1 oz', 'Cerveza Corona: 3 cucharillas'] },
+                { name: 'Medusa', method: 'Edificado', glass: 'Shot', ingredients: ['Blue Curacao: 1 oz', 'Tequila: 1 oz', 'Licor de melón: 1/2 oz', 'Baileys: 1 gota'] }
+            ],
+            'Ron': [
+                { name: 'Batido de Ron', method: 'Batido', glass: 'Copa pera', ingredients: ['Ron blanco: 1 1/2 oz', 'Ron dorado: 1 1/2 oz', 'Hojas de menta: 1 tallo', 'Cerezas: 3 unidades'] },
+                { name: 'Licuado de Piña', method: 'Licuado', glass: 'Copa pera', ingredients: ['Ron blanco: 3 oz', 'Jugo de piña: 3 oz', 'Leche de coco: 6 oz', 'Azúcar granulada: 20 gr', 'Piña fresca o deshidratada: 1 rodaja', 'Cerezas: 1 unidad'] },
+                { name: 'Batido de Margarita Frutillada', method: 'Batido o licuado', glass: 'Margarita', ingredients: ['Ron blanco: 1 1/2 oz', 'Licor de frutilla: 1 oz', 'Margarita mix: 1 oz', 'Piña colada mix: 1 oz', 'Frutillas frescas: 8 unidades', 'Menta o hierbabuena: 2 unidades', 'Leche: 1 oz', 'Crema de leche: 1 oz', 'Jugo de piña: 1 oz', 'Azúcar blanca granulada: 15 gr'] },
+                { name: 'Between the Sheets', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Ron blanco: 1 1/2 oz', 'Coñac: 1 oz', 'Triple sec: 1 oz', 'Zumo de limón: 1 oz', 'Limón real: 1 rodaja'] },
+                { name: 'Hurricane', method: 'Directo', glass: 'Vaso huracán', ingredients: ['Ron dorado: 1 1/2 oz', 'Jugo de naranja: 3 oz', 'Jarabe de maracuyá: 3 oz', 'Cerezas: 3 unidades', 'Piña fresca o deshidratada: 1 rodaja', 'Naranja: 1 rodaja', 'Menta o hierbabuena: 1 tallo'] },
+                { name: 'Tequila Sunrise', method: 'Directo', glass: 'Vaso largo', ingredients: ['Tequila blanco: 1 1/2 oz', 'Jugo de naranja: 3 1/2 oz', 'Granadina: 1 dash', 'Piel de naranja: 1 unidad', 'Cerezas: 3 unidades'] },
+                { name: 'Maui Wowie', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Ron blanco: 2 oz', 'Licor de melón: 1/2 oz', 'Jugo de naranja: 2 oz', 'Piña fresca o deshidratada, hojas de piña: 1 unidad'] },
+                { name: 'Cuba Libre', method: 'Directo', glass: 'Vaso largo', ingredients: ['Ron blanco: 1 1/2 oz', 'Coca Cola: 1 oz', 'Gajos de limón: 1/2 oz', 'Limón real: 1 rodaja'] },
+                { name: 'Lounge Lizard', method: 'Directo', glass: 'Vaso beverage', ingredients: ['Ron dorado: 1 oz', 'Licor de Amaretto: 1 oz', 'Coca Cola: 1 oz', 'Cerezas: 3 unidades'] },
+                { name: 'Mojito', method: 'Directo', glass: 'Vaso largo', ingredients: ['Ron blanco: 1 1/2 oz', 'Limón real: 6 gajos', 'Azúcar: 2 cucharillas', 'Hojas de hierbabuena: 4 tallos', 'Agua con gas: 1 oz', 'Limón real: 1 rodaja'] },
+                { name: 'Mai Tai', method: 'Batido', glass: 'Vaso tiki', ingredients: ['Ron blanco: 1 1/2 oz', 'Ron dorado: 1 1/2 oz', 'Licor de Amaretto: 1 oz', 'Zumo de limón: 2 oz', 'Jugo de naranja: 4 oz', 'Piña fresca o deshidratada: 1 rodaja', 'Cerezas: 3 unidades'] },
+                { name: 'Blue Hawaiian', method: 'Directo', glass: 'Vaso beverage', ingredients: ['Ron blanco: 1 1/2 oz', 'Blue Curaçao: 1 oz', 'Malibu: 1 1/2 oz', 'Jugo de piña: 3 oz', 'Piña fresca o deshidratada: 1 rodaja', 'Cerezas: 3 unidades'] },
+                { name: 'Daiquiri', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Ron blanco: 2 oz', 'Zumo de limón: 1 oz', 'Almíbar: 1 oz', 'Limón real: 1 rodaja'] },
+                { name: 'Mojito Royal', method: 'Machacado', glass: 'Vaso de trago largo', ingredients: ['Ron blanco: 1 1/2 oz', 'Zumo de limón: 1/2 oz', 'Hierbabuena: 3 ramas', 'Almíbar: 1 oz', 'Champagne: 3 1/2 oz', 'Limón real: 1 rodaja'] },
+                { name: 'Tropical Punch', method: 'Directo', glass: 'Copa de vino', ingredients: ['Malibu: 2 oz', 'Jugo de piña: 3 oz', 'Granadina: 1 oz', 'Champagne: 3 oz', 'Cerezas con almíbar: 3 unidades'] },
+                { name: 'Batida de Chocolate', method: 'Licuado', glass: 'Copa pera', ingredients: ['Ron blanco: 1 1/2 oz', 'Leche condensada: 3 cucharadas', 'Helado de chocolate: 3 bolas', 'Chocolate líquido: 1 cucharilla', 'Galleta de helado: 2 unidades', 'Coco rallado: 1 cucharilla', 'Crema en lata: c/n'] },
+                { name: 'Ave Roja', method: 'Directo', glass: 'Huracán', ingredients: ['Ron: 1 oz', 'Licor de frutilla: 2 oz', 'Helado de frutilla: 4 bolas', 'Crema en lata: c/n', 'Galleta para helado: 2 unidades', 'Chocolate rallado: c/n'] },
+                { name: 'Ponche de Té', method: 'Directo', glass: 'Copa de vino', ingredients: ['Té pasado: 3 oz', 'Zumo de limón: 1 oz', 'Vino tinto dulce: 1 oz', 'Ron blanco: 1 oz'] },
+                { name: 'Bacardi Tea', method: 'Directo', glass: 'Beverage', ingredients: ['Ron blanco: 1 1/2 oz', 'Licor de durazno: 1/2 oz', 'Té pasado frío: 3 oz', 'Licor de cassis: 1/2 oz', 'Granadina: 1/2 oz', 'Menta: 1 rama', 'Limón: 1 rodaja'] }
+            ],
+            'Singani': [
+                { name: 'Amanecer', method: 'Batido', glass: 'Copa flauta', ingredients: ['Singani: 1 1/2 oz', 'Licor de Amaretto: 1/2 oz', 'Jugo de naranja: 4 oz', 'Naranja: 1 unidad'] },
+                { name: 'Corazón Boliviano', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Singani: 1 1/2 oz', 'Licor de sour apple: 1/2 oz', 'Jugo de piña: 3 oz', 'Manzana: 1/2 unidad'] },
+                { name: 'Singani Fresh', method: 'Directo', glass: 'Old fashioned', ingredients: ['Singani: 1 1/2 oz', 'Licor de menta: 1/2 oz', 'Jugo de piña: 1 oz', 'Hierbabuena: 1 tallo', 'Piña fresca: 1 rodaja'] },
+                { name: 'Singani Sour', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Singani: 1 1/2 oz', 'Licor de menta: 1/2 oz', 'Almíbar: 1 oz', 'Clara de huevo: 1 unidad', 'Chocolate rallado: 2 tallos', 'Leche: 1 oz', 'Crema de leche: 1 oz', 'Azúcar blanca granulada: 20 gr'] },
+                { name: 'Singani Santo', method: 'Directo', glass: 'Copa balón', ingredients: ['Singani: 1 1/2 oz', 'Licor de pomelo: 3/4 oz', 'Agua de pomelo: 3/4 cucharilla', 'Jugo de cherry: 1 oz', 'Cerezas: 3 unidades'] },
+                { name: 'Refresh', method: 'Directo', glass: 'Vaso largo', ingredients: ['Singani: 1 1/2 oz', 'Licor de manzana: 1/2 oz', 'Mix de limón: 3 oz', 'Cerezas: 3 unidades', 'Limón: 2 rodajas', 'Hierbabuena: 3 tallos', 'Azúcar: 60 gr'] },
+                { name: 'Chuflay', method: 'Directo', glass: 'Vaso largo', ingredients: ['Singani: 1 1/2 oz', 'Ginger ale: 3 1/2 oz', 'Zumo de limón: 1/2 oz', 'Limón: 2 rodajas'] },
+                { name: 'Yungueñito', method: 'Directo', glass: 'Copa pera', ingredients: ['Singani: 1 1/2 oz', 'Jugo de naranja: 4 oz', 'Naranja: 2 gajos', 'Cerezas con jugo: 3 unidades'] },
+                { name: 'Singani Blue', method: 'Directo', glass: 'Vaso largo', ingredients: ['Singani: 1 1/2 oz', 'Blue Curaçao: 1 oz', 'Soda blanca: 3 1/2 oz', 'Zumo de limón: 1/2 oz'] },
+                { name: 'Maracuyá Sunrise', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Singani: 1 1/2 oz', 'Jarabe de maracuyá: 3 1/2 oz', 'Jugo de cherry: 1 dash', 'Cerezas: 3 unidades'] },
+                { name: 'Dulces Sueños', method: 'Batido', glass: 'Old fashioned', ingredients: ['Singani: 1 1/2 oz', 'Licor de cacao: 1 oz', 'Almíbar: 1/2 oz', 'Licor de amaretto: 1/2 oz', 'Half and half: 2 oz', 'Canela en polvo: c/n', 'Chocolate rallado: c/n', 'Leche: 1 oz', 'Crema de leche: 1 oz', 'Azúcar blanca granulada: 20 gr'] },
+                { name: 'Sierra', method: 'Batido', glass: 'Old fashioned', ingredients: ['Singani: 1 1/2 oz', 'Irish cream: 1 oz', 'Licor de cacao: 1/2 oz', 'Almíbar: 1 oz', 'Leche: 1 oz', 'Chocolate rallado: 1 oz'] },
+                { name: 'Sucumbe', method: 'Directo', glass: 'Mug', ingredients: ['Leche: 250 ml', 'Huevo: 1 unidad', 'Canela: 1 rama', 'Clavo de olor: 3 unidades', 'Singani: 3 oz', 'Canela en polvo: 3 cucharillas'] },
+                { name: 'Té con Té', method: 'Directo', glass: 'Taza achinada', ingredients: ['Té pasado: 1 taza', 'Zumo de limón: 1/2 oz', 'Singani: 1 1/2 oz'] },
+                { name: 'Sultana', method: 'Directo', glass: 'Taza achinada', ingredients: ['Singani: 1 1/2 oz', 'Sultana pasada: 1 taza', 'Licor de café: 1/2 oz'] },
+                { name: 'Yungueñito para el Frío', method: 'Directo', glass: 'Taza achinada', ingredients: ['Singani: 1/2 oz', 'Zumo de naranja natural caliente: 1 unidad', 'Naranjas: 4 unidades', 'Azúcar morena: 2 cucharillas', 'Twist de naranja: 1 unidad'] },
+                { name: 'Submarino', method: 'Directo', glass: 'Sandia', ingredients: ['Singani: 10 oz', 'Vino: 4 oz', 'Sprite: 10 oz', 'Sandia verde claro ovalada pequeña: 1 unidad', 'Frutilla: 5 unidades', 'Moras: 5 unidades'] }
+            ],
+            'Whisky': [
+                { name: 'Padrino', method: 'Directo', glass: 'Old fashioned', ingredients: ['Whisky (Johnnie Walker Rojo): 1 1/4 oz', 'Licor de Amaretto: 1 1/4 oz', 'Hielo en esfera: 1 unidad'] },
+                { name: 'Old Fashioned', method: 'Directo', glass: 'Old fashioned', ingredients: ['Bourbon (Jack Daniel\'s): 1 1/2 oz', 'Bitter Angostura: 2 dash', 'Agua normal (opcional): 2 oz', 'Azúcar: 2 cucharillas', 'Naranja: 1 slash'] },
+                { name: 'Whisky Sour', method: 'Directo', glass: 'Vaso largo', ingredients: ['Bourbon: 1 oz', 'Almíbar: 1/2 oz', 'Zumo de limón: 1 oz', 'Clara de huevo: 1 unidad', 'Bitter Angostura: 2 dash'] },
+                { name: 'Amaretto Naranja', method: 'Directo', glass: 'Old fashioned', ingredients: ['Whisky: 1 1/2 oz', 'Licor de Amaretto: 2 oz', 'Jugo de naranja: 4 oz'] },
+                { name: 'Honey Piña', method: 'Batido', glass: 'Copa flauta', ingredients: ['Drambuie: 1 1/2 oz', 'Jugo de piña: 1 1/2 oz', 'Miel: 1 cuchara', 'Sidra o soda blanca: 3 oz', 'Piña fresca: 1 rodaja'] },
+                { name: 'Rob Roy', method: 'Refrescado', glass: 'Copa baby cóctel', ingredients: ['Whisky: 1 1/2 oz', 'Vermouth rosso: 3/4 oz', 'Bitter Angostura: 2 dash', 'Cherry: 2 unidades'] },
+                { name: 'Highball', method: 'Directo', glass: 'Vaso largo', ingredients: ['Whisky: 1 oz', 'Ginger ale: 4 oz', 'Limón: 1 gajo'] },
+                { name: 'Manhattan', method: 'Refrescado', glass: 'Copa baby cóctel', ingredients: ['Bourbon: 2 oz', 'Vermouth rosso: 1 oz', 'Bitter Angostura: 2 dash', 'Cherry: 3 unidades'] },
+                { name: 'Mint Julep', method: 'Directo', glass: 'Vaso de cobre', ingredients: ['Bourbon: 2 1/2 oz', 'Almíbar: 1 oz', 'Hojas de menta: 8 unidades', 'Hielo triturado: 1 oz', 'Menta: 1 tallo'] },
+                { name: 'Rusty Nail', method: 'Directo', glass: 'Old fashioned', ingredients: ['Whisky escocés: 2 oz', 'Drambuie: 1 oz', 'Esfera de hielo: 1 unidad'] },
+                { name: 'New York Sour', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Drambuie: 2 oz', 'Jugo de limón: 1 oz', 'Almíbar: 1 oz', 'Jugo de naranja: 1 oz', 'Vino tinto (edificado): 2 oz'] },
+                { name: 'Rompope', method: 'Batido', glass: 'Copa flauta', ingredients: ['Huevo: 2 unidades', 'Azúcar: 1/2 oz', 'Bourbon: 1 oz', 'Crema de leche: 3 oz', 'Nuez moscada rallada: 1 cucharilla', 'Nuez rallada: 1 cucharilla'] },
+                { name: 'Don Pierro', method: 'Directo', glass: 'Old fashioned', ingredients: ['Helado de vainilla: 1 bola', 'Whisky: 1 1/2 oz', 'Nuez rallada: 1 cucharilla'] }
+            ],
+            'Shots': [
+                { name: 'B-52', method: 'Edificado', glass: 'Shot flameado', ingredients: ['Licor de café: 3/4 oz', 'Irish cream: 3/4 oz', 'Triple sec: 3/4 oz'] },
+                { name: 'Blood Frog', method: 'Edificado', glass: 'Shot', ingredients: ['Licor de melón: 3/4 oz', 'Irish cream: 3/4 dash', 'Granadina: 3/4 oz'] },
+                { name: 'Cerebro de Mono', method: 'Edificado', glass: 'Shot', ingredients: ['Vodka: 1 oz', 'Zumo de limón: 3/4 oz', 'Irish cream: 3/4 oz', 'Granadina: 1/2 oz'] },
+                { name: 'Khalua Mint', method: 'Edificado', glass: 'Shot', ingredients: ['Licor de café: 3/4 oz', 'Licor de menta: 3/4 oz', 'Half and half: 3/4 oz', 'Leche: 1 1/2 oz', 'Crema de leche: 1 1/2 oz', 'Azúcar blanca granulada: 20 gr'] },
+                { name: 'Lemon Drop', method: 'Batido', glass: '2 shots', ingredients: ['Vodka: 2 oz', 'Limón: 2 gajos', 'Azúcar: 2 cucharillas'] },
+                { name: 'Brave Bull', method: 'Edificado', glass: 'Shot flameado', ingredients: ['Tequila: 1 1/4 oz', 'Licor de café: 1 1/4 oz'] },
+                { name: 'Toc Toc', method: 'Directo', glass: 'Shot', ingredients: ['Vodka: 1 1/4 oz', 'Sprite: 3/4 oz'] },
+                { name: 'Satanás', method: 'Directo', glass: 'Shot y platillo', ingredients: ['Whisky: 1 oz', 'Triple sec: 1 oz', 'Licor de café: 1 dash', 'Granadina: 1 dash'] },
+                { name: 'Blow Job', method: 'Edificado', glass: 'Shot', ingredients: ['Licor de durazno: 3/4 oz', 'Irish cream: 3/4 oz', 'Crema batida: 3/4 unidades'] },
+                { name: 'Butterfly', method: 'Directo', glass: 'Shot', ingredients: ['Vodka: 1 oz', 'Blue Curaçao: 1 oz', 'Granadina: 1 oz'] },
+                { name: 'Ying Yang', method: 'Directo', glass: 'Shot', ingredients: ['Licor de café: 1 oz', 'Vodka: 1 oz', 'Limón: 1 rodaja', 'Azúcar blanca granulada: 1 cucharilla', 'Café instantáneo: 1 cucharilla'] },
+                { name: 'Ciervo Rojo', method: 'Batido', glass: 'Shot', ingredients: ['Jagermaister: 2 unidades', 'Licor de durazno: 1/2 oz', 'Licor de cassis: 1 oz'] },
+                { name: 'Medusa', method: 'Edificado', glass: 'Shot', ingredients: ['Blue Curacao: 1 oz', 'Tequila: 1 oz', 'Licor de melón: 1/2 oz', 'Baileys: 1 gota'] },
+                { name: 'Pinki', method: 'Edificado', glass: 'Shots', ingredients: ['Granadina: 1 oz', 'Malibu: 1 oz', 'Jugo de naranja: 5 oz', 'Almíbar: 1 oz', 'Vodka: 1 oz', 'Blue Curaçao: 3/4 oz'] }
+            ],
+            'Cócteles de Helado': [
+                { name: 'Ave Roja', method: 'Directo', glass: 'Huracán', ingredients: ['Ron: 1 oz', 'Licor de frutilla: 2 oz', 'Helado de frutilla: 4 bolas', 'Crema en lata: c/n', 'Galleta para helado: 2 unidades', 'Chocolate rallado: c/n'] },
+                { name: 'Margarita de Helado', method: 'Licuado', glass: 'Margarita', ingredients: ['Triple sec: 1/2 oz', 'Tequila: 1 1/2 oz', 'Helado de limón: 3 bolas', 'Limón: 1 rodaja', 'Ralladura de limón: 1 cucharilla', 'Coco rallado: 1 cucharilla', 'Galleta para helado: 1 unidad'] },
+                { name: 'Cactus Colada', method: 'Licuado', glass: 'Copa pera', ingredients: ['Tequila: 1 oz', 'Licor de melón: 2 oz', 'Jugo de piña: 2 oz', 'Helado de coco: 2 bolas', 'Coco rallado: 2 cucharillas', 'Chocolate líquido: c/n', 'Galleta para helado: 1 unidad', 'Chocolate rallado: c/n'] },
+                { name: 'Don Pierro', method: 'Directo', glass: 'Old fashioned', ingredients: ['Helado de vainilla: 1 bola', 'Whisky: 1 1/2 oz', 'Nuez rallada: 1 cucharilla'] },
+                { name: 'Eby', method: 'Licuado', glass: 'Copa pera', ingredients: ['Coñac: 1 1/2 oz', 'Cachaza: 1 1/2 oz', 'Helado de mora: 3 bolas', 'Moras: 6 unidades', 'Galleta para helado: 1 unidad', 'Coco rallado: 1 cucharilla', 'Crema en lata: c/n'] },
+                { name: 'Batida de Chocolate', method: 'Licuado', glass: 'Copa pera', ingredients: ['Ron blanco: 1 1/2 oz', 'Leche condensada: 3 cucharadas', 'Helado de chocolate: 3 bolas', 'Chocolate líquido: 1 cucharilla', 'Galleta de helado: 2 unidades', 'Coco rallado: 1 cucharilla', 'Crema en lata: c/n'] }
+            ],
+            'Cócteles de Cerveza': [
+                { name: 'Blue Beer', method: 'Directo', glass: 'Botella', ingredients: ['Cerveza Corona: 1 personal', 'Tequila blanco: 1 oz', 'Blue Curacao: 1 oz', 'Limón en gajo: 1 gajo', 'Sal: c/n'] },
+                { name: 'Red Beer', method: 'Directo', glass: 'Botella', ingredients: ['Cerveza Corona: 1 personal', 'Tequila blanco: 1 oz', 'Granadina: 1 oz', 'Gajo de limón: 1 gajo', 'Sal: c/n'] },
+                { name: 'Cerveza Verde', method: 'Directo', glass: 'Shopp', ingredients: ['Licor de melón: 1 oz', 'Cointreau: 1 oz', 'Tequila: 1 oz', 'Cerveza Corona: 8 oz', 'Pimienta rosada en grano: c/n', 'Azúcar: c/n', 'Limón: 1/2 oz', 'Moras: 2 unidades', 'Cayena: c/n'] },
+                { name: 'Michelada Picante', method: 'Directo', glass: 'Old fashioned', ingredients: ['Rocoto: 2 unidades', 'Cilantro: 3 ramas', 'Tequila: 1 oz', 'Triple sec: 1 oz', 'Zumo de limón: 1/2 oz', 'Cerveza: 8 oz'] },
+                { name: 'Cerveza en Salsa', method: 'Directo', glass: 'Copa de vino', ingredients: ['Hielo picado: 2 palas', 'Almíbar: 2 oz', 'Zumo de limón: 2 oz', 'Tequila: 4 oz', 'Blue Curacao: 2 oz', 'Ribete de Blue Curacao: c/n', 'Sal: c/n', 'Cerveza Corona: 1 personal'] },
+                { name: 'Submarino', method: 'Directo', glass: 'Copa de vino y shot', ingredients: ['Tequila blanco: 1 1/2 oz', 'Licor de cassis: 1 oz', 'Cerveza Corona: 3 cucharillas'] }
+            ],
+            'Cócteles de Café y Té': [
+                { name: 'Café di Amaretto', method: 'Directo', glass: 'Mug', ingredients: ['Amaretto: 1 oz', 'Café americano: 1 taza', 'Crema batida: c/n', 'Canela en rama: 1 unidad', 'Chocolate rallado: 1 cucharilla'] },
+                { name: 'Irish Coffee', method: 'Directo', glass: 'Mug', ingredients: ['Whisky: 1 1/2 oz', 'Café americano: 1 taza', 'Crema batida: c/n', 'Canela molida: 1 cucharilla'] },
+                { name: 'Cafexicano', method: 'Directo', glass: 'Mug', ingredients: ['Licor de café: 1 oz', 'Tequila: 1 oz', 'Café americano: 1 taza', 'Crema batida: c/n', 'Ralladura de limón: 1 cucharilla'] },
+                { name: 'Café Marok', method: 'Directo', glass: 'Mug', ingredients: ['Whisky: 1 oz', 'Irish cream: 1 oz', 'Licor de chocolate: 1 oz', 'Café americano: 1 taza', 'Triple sec: 1 oz', 'Crema batida: c/n', 'Chocolate rallado: 1 cucharilla'] },
+                { name: 'Moka Martini', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Gin: 1 1/2 palas', 'Licor de chocolate: 1 oz', 'Café americano: 1 taza', 'Almíbar: 1 oz'] },
+                { name: 'Carajillo', method: 'Directo', glass: 'Mug', ingredients: ['Licor de anís: 1 oz', 'Café americano: 3 oz', 'Twist de limón: 1 unidad'] },
+                { name: 'Sucumbe', method: 'Directo', glass: 'Mug', ingredients: ['Leche: 250 ml', 'Huevo: 1 unidad', 'Canela: 1 rama', 'Clavo de olor: 3 unidades', 'Singani: 3 oz', 'Canela en polvo: 3 cucharillas'] },
+                { name: 'Té con Té', method: 'Directo', glass: 'Taza achinada', ingredients: ['Té pasado: 1 taza', 'Zumo de limón: 1/2 oz', 'Singani: 1 1/2 oz'] },
+                { name: 'Sultana', method: 'Directo', glass: 'Taza achinada', ingredients: ['Singani: 1 1/2 oz', 'Sultana pasada: 1 taza', 'Licor de café: 1/2 oz'] },
+                { name: 'Bacardi Tea', method: 'Directo', glass: 'Beverage', ingredients: ['Ron blanco: 1 1/2 oz', 'Licor de durazno: 1/2 oz', 'Té pasado frío: 3 oz', 'Licor de cassis: 1/2 oz', 'Granadina: 1/2 oz', 'Menta: 1 rama', 'Limón: 1 rodaja'] },
+                { name: 'Ponche de Té', method: 'Directo', glass: 'Copa de vino', ingredients: ['Té pasado: 3 oz', 'Zumo de limón: 1 oz', 'Vino tinto dulce: 1 oz', 'Ron blanco: 1 oz'] },
+                { name: 'Yungueñito para el Frío', method: 'Directo', glass: 'Taza achinada', ingredients: ['Singani: 1/2 oz', 'Zumo de naranja natural caliente: 1 unidad', 'Naranjas: 4 unidades', 'Azúcar morena: 2 cucharillas', 'Twist de naranja: 1 unidad'] }
+            ],
+            'Cócteles de Vino y Champagne': [
+                { name: 'Mimosa', method: 'Directo', glass: 'Copa flauta', ingredients: ['Champagne: 2 1/2 oz', 'Zumo de naranja: 1 oz', 'Rodaja de naranja: 1 unidad', 'Cerezas: 3 unidades'] },
+                { name: 'Mojito Royal', method: 'Machacado', glass: 'Vaso de trago largo', ingredients: ['Ron blanco: 1 1/2 oz', 'Zumo de limón: 1/2 oz', 'Hierbabuena: 3 ramas', 'Almíbar: 1 oz', 'Champagne: 3 1/2 oz', 'Limón real: 1 rodaja'] },
+                { name: 'Kir Royale', method: 'Directo', glass: 'Copa flauta', ingredients: ['Champagne: 3 oz', 'Licor de cassis: 1/2 oz', 'Arándanos o moras: 3 unidades'] },
+                { name: 'Champagne Punch', method: 'Directo', glass: 'Copa de vino', ingredients: ['Jugo de limón: 1 oz', 'Jugo de naranja natural: 1 oz', 'Marrasquino: 3/4 oz', 'Singani: 1/2 oz', 'Triple sec: 1/2 oz', 'Champagne: 4 oz', 'Limón: 1 rodaja', 'Naranja: 1 rodaja'] },
+                { name: 'Tropical Punch', method: 'Directo', glass: 'Copa de vino', ingredients: ['Malibu: 2 oz', 'Jugo de piña: 3 oz', 'Granadina: 1 oz', 'Champagne: 3 oz', 'Cerezas con almíbar: 3 unidades'] },
+                { name: 'Christmas Champagne', method: 'Batido', glass: 'Copa de vino', ingredients: ['Vodka: 1 1/2 oz', 'Limonada rosa: 2 oz', 'Licor de cassis: 3 oz', 'Champagne: 4 oz', 'Frutos del bosque congelados: 40 gr'] },
+                { name: 'Vaina Chilena', method: 'Batido', glass: 'Copa de vino', ingredients: ['Vino dulce: 2 oz', 'Licor de cacao: 1 oz', 'Coñac: 1 oz', 'Yema de huevo: 1 unidad', 'Azúcar impalpable: 1 cucharilla', 'Canela en polvo: 2 cucharillas'] },
+                { name: 'Vino Caliente', method: 'Directo', glass: 'Copa de vino', ingredients: ['Vino tinto dulce: 8 oz', 'Zumo de limón: 3 oz', 'Zumo de naranja: 3 oz', 'Pimienta rosada en grano: 1/2 cucharilla', 'Canela en rama: 2 unidades', 'Clavo de olor en rama: 3 unidades', 'Nuez moscada: 1 pizca ralladura'] },
+                { name: 'Sangría', method: 'Directo', glass: 'Copa de vino', ingredients: ['Limón: 5 supremas', 'Naranja: 5 supremas', 'Manzana: cubos', 'Vino tinto: 8 oz', 'Gaseosa de limón: 5 oz', 'Azúcar: si es necesario', 'Frutos del bosque congelados: 40 gr'] },
+                { name: 'Submarino', method: 'Directo', glass: 'Sandia', ingredients: ['Singani: 10 oz', 'Vino: 4 oz', 'Sprite: 10 oz', 'Sandia verde claro ovalada pequeña: 1 unidad', 'Frutilla: 5 unidades', 'Moras: 5 unidades'] }
+            ],
+            'Otros': [
+                { name: 'Fernet Cola', method: 'Directo', glass: 'Vaso largo', ingredients: ['Fernet: 1 1/2 oz', 'Coca Cola: 4 oz'] },
+                { name: 'Fuzzy Neavel', method: 'Directo', glass: 'Vaso largo', ingredients: ['Licor de durazno: 1 1/2 oz', 'Jugo de naranja: 4 oz', 'Durazno en almíbar: 2 unidades'] },
+                { name: 'Caipirinha', method: 'Machacado o batido', glass: 'Old fashioned', ingredients: ['Cachaza: 2 oz', 'Limón en gajos: 8', 'Azúcar: 3 a 4 cucharillas', 'Bitter de cítricos: c/n'] },
+                { name: 'Pisco Sour', method: 'Batido', glass: 'Copa de vino', ingredients: ['Pisco: 3 oz', 'Zumo de limón: 1 oz', 'Almíbar: 1 oz', 'Clara de huevo: 1 unidad', 'Bitter angostura: c/n'] },
+                { name: 'French Conection', method: 'Directo', glass: 'Old fashioned', ingredients: ['Coñac: 1 1/4 oz', 'Licor de amaretto: 1 1/4 oz', 'Esfera de hielo: 1 unidad'] },
+                { name: 'Good & Plenty', method: 'Directo', glass: 'Old fashioned', ingredients: ['Licor de café: 3 oz', 'Licor de anís: 1 oz', 'Hielo esfera: 1 unidad'] },
+                { name: 'Grasshopper', method: 'Batido', glass: 'Copa cóctel', ingredients: ['Licor de menta: 1 1/2 oz', 'Licor de cacao: 1 1/2 oz', 'Half and half: 1 1/2 oz', 'Chocolate líquido: c/n', 'Chocolate rallado: c/n', 'Leche: 1 oz', 'Crema de leche: 1 oz', 'Azúcar blanca granulada: 15 gr'] }
+            ]
+        };
+        
+        const cocktailList = document.getElementById('cocktail-list');
+        const bartenderCocktailList = document.getElementById('bartender-cocktail-list');
+        const modal = document.getElementById('cocktail-modal');
+        const modalContent = document.getElementById('modal-content-details');
+        const loginModal = document.getElementById('login-modal');
+        const clientLevel = document.getElementById('client-level');
+        const bartenderLevel = document.getElementById('bartender-level');
+        const managerLevel = document.getElementById('manager-level');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const passwordInput = document.getElementById('passwordInput');
+        const submitPasswordBtn = document.getElementById('submitPasswordBtn');
+        const loginError = document.getElementById('loginError');
+
+        // Función para mostrar el modal con los detalles de la receta (solo para cócteles públicos, si es necesario)
+        function showModal(cocktail) {
+            modalContent.innerHTML = `
+                <img src="${cocktail.image}" alt="${cocktail.name}" class="w-full md:w-1/3 rounded-lg shadow-md mb-6 md:mb-0">
+                <div class="md:w-2/3">
+                    <h3 class="elegant-title text-3xl font-bold mb-4">${cocktail.name}</h3>
+                    <p class="text-gray-600 mb-6">${cocktail.description}</p>
+                </div>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        // Función para generar las tarjetas de cócteles públicos
+        function renderPublicCocktails() {
+            cocktailList.innerHTML = ''; // Limpiar la lista
+            publicCocktails.forEach(cocktail => {
+                const card = document.createElement('div');
+                card.className = 'cocktail-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl';
+                card.innerHTML = `
+                    <img src="${cocktail.image}" alt="${cocktail.name}" class="w-full h-48 object-cover rounded-md mb-4 shadow">
+                    <h3 class="elegant-title text-2xl font-bold mb-2">${cocktail.name}</h3>
+                    <p class="text-gray-600">${cocktail.description}</p>
+                `;
+                card.addEventListener('click', () => showModal(cocktail));
+                cocktailList.appendChild(card);
+            });
+        }
+        
+        // Función para generar las tarjetas de cócteles para bartenders
+        function renderBartenderCocktails() {
+            bartenderCocktailList.innerHTML = ''; // Limpiar la lista
+            for (const category in bartenderCocktails) {
+                const categoryTitle = document.createElement('h3');
+                categoryTitle.className = 'elegant-title text-3xl font-bold text-center mt-12 mb-6 text-gray-800';
+                categoryTitle.textContent = category;
+                bartenderCocktailList.appendChild(categoryTitle);
+
+                const categoryGrid = document.createElement('div');
+                categoryGrid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8';
+
+                bartenderCocktails[category].forEach(cocktail => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white p-6 rounded-xl shadow-lg hover:shadow-xl';
+                    let ingredientsList = cocktail.ingredients.map(ing => `<li>${ing}</li>`).join('');
+                    card.innerHTML = `
+                        <h4 class="elegant-title text-2xl font-bold mb-2">${cocktail.name}</h4>
+                        <p class="text-sm font-semibold text-orange-600">Método: ${cocktail.method}</p>
+                        <p class="text-sm font-semibold text-gray-700">Copa: ${cocktail.glass}</p>
+                        <div class="mt-4">
+                            <h5 class="font-bold text-lg mb-2">Ingredientes y cantidades:</h5>
+                            <ul class="list-disc list-inside text-gray-600">${ingredientsList}</ul>
+                        </div>
+                        <a href="https://docs.google.com/spreadsheets/d/1dhN37OCJ6CBPOitpensoCuri0gkBt86LJLpH-8vDCjA/edit?gid=1096176080#gid=1096176080" target="_blank" class="block w-full text-center mt-4 bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-full hover:bg-gray-300 transition-colors duration-300">Ver Costeo</a>
+                    `;
+                    categoryGrid.appendChild(card);
+                });
+                bartenderCocktailList.appendChild(categoryGrid);
+            }
+        }
+
+        // Función para manejar el login
+        function handleLogin() {
+            const password = passwordInput.value.toLowerCase();
+            loginError.classList.add('hidden'); // Ocultar errores anteriores
+
+            if (password === 'bartender') {
+                clientLevel.classList.add('hidden');
+                bartenderLevel.classList.remove('hidden');
+                managerLevel.classList.add('hidden');
+                loginModal.style.display = 'none';
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                renderBartenderCocktails();
+            } else if (password === 'barmanager') {
+                clientLevel.classList.add('hidden');
+                bartenderLevel.classList.remove('hidden');
+                managerLevel.classList.remove('hidden');
+                loginModal.style.display = 'none';
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                renderBartenderCocktails();
+            } else {
+                loginError.classList.remove('hidden');
+            }
+        }
+
+        // Función para manejar el logout
+        function handleLogout() {
+            clientLevel.classList.remove('hidden');
+            bartenderLevel.classList.add('hidden');
+            managerLevel.classList.add('hidden');
+            loginBtn.classList.remove('hidden');
+            logoutBtn.classList.add('hidden');
+            passwordInput.value = '';
+        }
+
+        // Event listeners
+        loginBtn.addEventListener('click', () => loginModal.style.display = 'flex');
+        logoutBtn.addEventListener('click', handleLogout);
+        submitPasswordBtn.addEventListener('click', handleLogin);
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+        
+        // Cerrar modal al hacer clic en la X o fuera de él
+        document.querySelectorAll('.close-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const modalToClose = e.target.closest('.modal');
+                if (modalToClose) modalToClose.style.display = 'none';
+            });
+        });
+        window.addEventListener('click', (event) => {
+            if (event.target === modal || event.target === loginModal) {
+                event.target.style.display = 'none';
+            }
+        });
+
+        // Generar los cócteles públicos al cargar la página
+        window.onload = renderPublicCocktails;
+    </script>
+
+</body>
+</html>
